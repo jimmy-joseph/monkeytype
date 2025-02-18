@@ -1,3 +1,4 @@
+import { parseWithSchema as parseJsonWithSchema } from "@monkeytype/util/json";
 import { PartialConfigSchema } from "@monkeytype/contracts/schemas/configs";
 import * as UpdateConfig from "../config";
 import * as Notifications from "../elements/notifications";
@@ -47,8 +48,9 @@ const modal = new AnimatedModal({
         return;
       }
       try {
-        const parsedConfig = PartialConfigSchema.strip().parse(
-          JSON.parse(state.value)
+        const parsedConfig = parseJsonWithSchema(
+          state.value,
+          PartialConfigSchema.strip()
         );
         await UpdateConfig.apply(migrateConfig(parsedConfig));
       } catch (e) {
