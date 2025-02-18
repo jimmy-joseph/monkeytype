@@ -93,6 +93,7 @@ import KeymapLayoutsCommands, {
   update as updateKeymapLayoutsCommands,
 } from "./lists/keymap-layouts";
 
+import { parseWithSchema as parseJsonWithSchema } from "@monkeytype/util/json";
 import Config, * as UpdateConfig from "../config";
 import * as Misc from "../utils/misc";
 import * as JSONData from "../utils/json-data";
@@ -362,8 +363,9 @@ export const commands: CommandsSubgroup = {
       exec: async ({ input }): Promise<void> => {
         if (input === undefined || input === "") return;
         try {
-          const parsedConfig = PartialConfigSchema.strip().parse(
-            JSON.parse(input)
+          const parsedConfig = parseJsonWithSchema(
+            input,
+            PartialConfigSchema.strip()
           );
           await UpdateConfig.apply(migrateConfig(parsedConfig));
           UpdateConfig.saveFullConfigToLocalStorage();
