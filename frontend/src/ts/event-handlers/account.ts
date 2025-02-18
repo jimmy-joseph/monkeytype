@@ -5,8 +5,12 @@ import { isAuthenticated } from "../firebase";
 import * as Notifications from "../elements/notifications";
 import * as EditResultTagsModal from "../modals/edit-result-tags";
 import * as AddFilterPresetModal from "../modals/new-filter-preset";
+import { parseWithSchema as parseJsonWithSchema } from "@monkeytype/util/json";
+import { z } from "zod";
 
 const accountPage = document.querySelector("#pageAccount") as HTMLElement;
+
+const TagsModalSchema = z.array(z.string());
 
 $(accountPage).on("click", ".pbsTime .showAllButton", () => {
   PbTablesModal.show("time");
@@ -41,7 +45,7 @@ $(accountPage).on("click", ".group.history .resultEditTagsButton", (e) => {
   const tags = $(e.target).attr("data-tags");
   EditResultTagsModal.show(
     resultid ?? "",
-    JSON.parse(tags ?? "[]") as string[],
+    parseJsonWithSchema(tags ?? "[]", TagsModalSchema),
     "accountPage"
   );
 });
